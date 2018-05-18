@@ -1,0 +1,469 @@
+---
+title: "Directed acyclic graphs in epidemiology"
+author: "JA Labrecque"
+institute:
+- Erasmus Medical Center, Rotterdam, The Netherlands
+date: "23 mei, 2018"
+output: 
+  beamer_presentation: 
+    incremental: true
+
+header-includes:
+- \usepackage{tikz}
+- \usepackage{xcolor}
+- \logo{\includegraphics[height=0.8cm]{logoerasmusmc.png}}
+- \definecolor{edarkblue}{RGB}{12, 33, 116}
+- \setbeamercolor{frametitle}{fg=edarkblue}
+- \usetikzlibrary{decorations.pathreplacing,angles,quotes,shapes,snakes}
+- \usepackage{subfigure}
+- \usepackage{graphicx}
+
+---
+
+## Directed acyclic graphs (DAGs)
+
+- Draw your assumptions before you draw your conclusions
+- "Directed" because the edges have a direction
+- "Acyclic" because there can be no cycles, i.e. a variable cannot cause itself
+- A causal DAG requires that:
+    - a lack of an arrow between two nodes implies the absence of a causal effect
+    - all common causes of variables on the graph are themselves on the graph
+    - any variable is a cause of its descendents
+- To map a causal DAG to observed data we require the causal Markov assumption that a node is independent of all nodes which it does not cause conditional on its parents
+- We can then use DAGs to explore the causal relationship between variables using our observational data
+
+## Directed acyclic graphs (DAGs)
+
+\begin{center}
+\includegraphics[height=5cm]{rejoice.png}
+\end{center}
+
+This is true! But the DAG has to be correctly specified which is the hard (impossible) part.
+
+## Rules of DAGs
+
+- Show conditioning on a node with a box
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\node[text centered] at (0,0) (e) {$A$};
+\node[text centered] at (0,2) (u) {$U$};
+\node[text centered] at (5,0) (y) {$Y$};
+\draw[->, line width= 1] (e) -- (y);
+\draw[->, line width= 1] (u) -- (e);
+\draw[->, line width= 1] (u) -- (y);
+\end{tikzpicture}
+\label{fig:standardIVdag}
+\end{figure}
+
+## Rules of DAGs
+
+- Show conditioning on a node with a box
+- The effect of A on Y is confounded because\\
+E$[Y|A=1]-$E$[Y|A=0]$ $\neq$ E$[Y^{a=1}]-$E$[Y^{a=0}]$
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\node[text centered] at (0,0) (e) {$A$};
+\node[text centered, rectangle, draw] at (0,2) (u) {$U$};
+\node[text centered] at (5,0) (y) {$Y$};
+\draw[->, line width= 1] (e) -- (y);
+\draw[->, line width= 1] (u) -- (e);
+\draw[->, line width= 1] (u) -- (y);
+\end{tikzpicture}
+\label{fig:standardIVdag}
+\end{figure}
+
+
+
+## Showing the IV assumptions in a DAG
+
+- This DAG makes the least amount of assumptions about the observed data. Every node is connected to every other
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\node[text centered] at (0,0) (g) {$Z$};
+\node[text centered] at (2.5,0) (e) {$A$};
+\node[text centered] at (0,2) (u) {$U$};
+\node[text centered] at (5,0) (y) {$Y$};
+\draw[->, line width= 1] (g) to [out=315,in=225, looseness=0.75] (y) ;
+\draw[->, line width= 1] (g) -- (e);
+\draw[->, line width= 1] (e) -- (y);
+\draw[->, line width= 1] (u) -- (e);
+\draw[->, line width= 1] (u) -- (y);
+\draw[->, line width= 1] (u) -- (g);
+\end{tikzpicture}
+\label{fig:standardIVdag}
+\end{figure}
+
+
+
+## Showing the IV assumptions in a DAG
+
+- The relevance assumption is represented by the red arrow, showing that there is a relationship between $Z$ and $A$
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\node[text centered] at (0,0) (g) {$Z$};
+\node[text centered] at (2.5,0) (e) {$A$};
+\node[text centered] at (0,2) (u) {$U$};
+\node[text centered] at (5,0) (y) {$Y$};
+\draw[->, line width= 1] (g) to [out=315,in=225, looseness=0.75] (y) ;
+\draw[->, line width= 1, red] (g) -- (e);
+\draw[->, line width= 1] (e) -- (y);
+\draw[->, line width= 1] (u) -- (e);
+\draw[->, line width= 1] (u) -- (y);
+\draw[->, line width= 1] (u) -- (g);
+\end{tikzpicture}
+\label{fig:standardIVdag}
+\end{figure}
+
+
+## Showing the IV assumptions in a DAG
+
+- The exclusion restriction (ER) assumption assumes that the direct edge between $Z$ and $A$ is not present
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\node[text centered] at (0,0) (g) {$Z$};
+\node[text centered] at (2.5,0) (e) {$A$};
+\node[text centered] at (0,2) (u) {$U$};
+\node[text centered] at (5,0) (y) {$Y$};
+\draw[->, line width= 1, lightgray] (g) to [out=315,in=225, looseness=0.75] node [cross out, draw]{} (y) ;
+\draw[->, line width= 1, red] (g) -- (e);
+\draw[->, line width= 1] (e) -- (y);
+\draw[->, line width= 1] (u) -- (e);
+\draw[->, line width= 1] (u) -- (y);
+\draw[->, line width= 1] (u) -- (g);
+\end{tikzpicture}
+\label{fig:standardIVdag}
+\end{figure}
+
+## Showing the IV assumptions in a DAG
+
+- The exchangeability assumption assumes that $Z$ is not confounded with $Y$
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\node[text centered] at (0,0) (g) {$Z$};
+\node[text centered] at (2.5,0) (e) {$A$};
+\node[text centered] at (0,2) (u) {$U$};
+\node[text centered] at (5,0) (y) {$Y$};
+\draw[->, line width= 1, lightgray] (g) to [out=315,in=225, looseness=0.75] node [cross out, draw]{} (y) ;
+\draw[->, line width= 1, red] (g) -- (e);
+\draw[->, line width= 1] (e) -- (y);
+\draw[->, line width= 1] (u) --  (e);
+\draw[->, line width= 1] (u) -- (y);
+\draw[->, line width= 1, lightgray] (u) -- node [cross out, draw]{} (g) ;
+\end{tikzpicture}
+\label{fig:standardIVdag}
+\end{figure}
+
+
+
+
+
+## Showing the IV assumptions in a DAG
+
+- With our three assumptions, we end up with our classic IV DAG
+- Note: monontonicity and homogeneity cannot be drawn on a DAG because they are parametric concepts
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\node[text centered] at (0,0) (g) {$Z$};
+\node[text centered] at (2.5,0) (e) {$A$};
+\node[text centered] at (2.5,2) (u) {$U$};
+\node[text centered] at (5,0) (y) {$Y$};
+\draw[->, line width= 1, red] (g) -- (e);
+\draw[->, line width= 1] (e) -- (y);
+\draw[->, line width= 1] (u) --  (e);
+\draw[->, line width= 1] (u) -- (y);
+\end{tikzpicture}
+\label{fig:standardIVdag}
+\end{figure}
+
+
+## Conditioning on exposure in IV analyses
+
+- Sometimes people like to stratify or restrict on exposure
+
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\node[text centered] at (0,0) (g) {$Z$};
+\node[text centered, rectangle, draw] at (2.5,0) (e) {$A$};
+\node[text centered] at (2.5,2) (u) {$U$};
+\node[text centered] at (5,0) (y) {$Y$};
+\draw[->, line width= 1] (g) -- (e);
+\draw[->, line width= 1] (e) -- (y);
+\draw[->, line width= 1] (u) --  (e);
+\draw[->, line width= 1] (u) -- (y);
+\end{tikzpicture}
+\label{fig:standardIVdag}
+\end{figure}
+
+
+
+## Conditioning on exposure in IV analyses
+
+- But we create a new association between $Z$ and $U$ therefore violating the exchangeability assumption
+
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\node[text centered] at (0,0) (g) {$Z$};
+\node[text centered, rectangle, draw] at (2.5,0) (e) {$A$};
+\node[text centered] at (2.5,2) (u) {$U$};
+\node[text centered] at (5,0) (y) {$Y$};
+\draw[->, line width= 1] (g) -- (e);
+\draw[->, line width= 1] (e) -- (y);
+\draw[->, line width= 1] (u) --  (e);
+\draw[->, line width= 1] (u) -- (y);
+\draw[line width= 1, red, dashed] (g) to [out=90,in=180, looseness=0.75] (u) ;
+\end{tikzpicture}
+\label{fig:standardIVdag}
+\end{figure}
+
+
+
+## Using DAGs to think about IV longitudinally
+
+- We can depict a time-varying exposure by splitting the $A$ node into separate nodes for each time point
+
+\begin{figure}
+\centering
+\begin{subfigure}
+\centering
+\begin{tikzpicture}
+\node[text centered] at (0,0) (g) {$Z$};
+\node[text centered] at (2.5,0) (e) {$A$};
+\node[text centered] at (2.5,2) (u) {$U$};
+\node[text centered] at (5,0) (y) {$Y$};
+\draw[->, line width= 1] (g) -- (e);
+\draw[->, line width= 1] (e) -- (y);
+\draw[->, line width= 1] (u) --  (e);
+\draw[->, line width= 1] (u) -- (y);
+\end{tikzpicture}
+\end{subfigure}
+
+\begin{subfigure}
+\centering
+\begin{tikzpicture}
+\node[text centered] at (0,0) (g) {$Z$};
+\node[text centered] at (2.5,0) (e0) {$A_0$};
+\node[text centered] at (2.5,2) (u) {$U$};
+\node[text centered] at (5,0) (e1) {$A_1$};
+\node[text centered] at (7.5,0) (y) {$Y$};
+\draw[->, line width= 1] (g) -- (e0);
+\draw[->, line width= 1] (e0) -- (e1);
+\draw[->, line width= 1] (e1) -- (y);
+\draw[->, line width= 1] (u) --  (e0);
+\draw[->, line width= 1] (u) --  (e1);
+\draw[->, line width= 1] (u) -- (y);
+\end{tikzpicture}
+\end{subfigure}
+\end{figure}
+
+
+
+
+
+## Using DAGs to think about IV longitudinally
+
+- We have assumed that $A_0$ does not have a direct effect on $Y$
+- If $A_0$ does affect $Y$ then we can no longer estimate the effect of $A_1$ ony $Y$
+- This is because, although the ER holds for $A$ as a whole, it does not hold for $A_1$
+- So if we measure $A_0$ we're alright?
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\node[text centered] at (0,0) (g) {$Z$};
+\node[text centered] at (2.5,0) (e0) {$A_0$};
+\node[text centered] at (2.5,2) (u) {$U$};
+\node[text centered] at (5,0) (e1) {$A_1$};
+\node[text centered] at (7.5,0) (y) {$Y$};
+\draw[->, line width= 1] (g) -- (e0);
+\draw[->, line width= 1] (e0) -- (e1);
+\draw[->, line width= 1] (e1) -- (y);
+\draw[->, line width= 1] (u) --  (e0);
+\draw[->, line width= 1] (u) --  (e1);
+\draw[->, line width= 1] (u) -- (y);
+\draw[->, line width= 1, red] (e0) to [out=315,in=225, looseness=0.75] (y) ;
+\end{tikzpicture}
+\label{fig:standardIVdag}
+\end{figure}
+
+
+
+
+
+## Using DAGs to think about IV longitudinally
+
+- We have also assumed that $Z$ does not have a direct effect on $A_1$
+- If $Z$ does affect $A_1$ then we can no longer estimate the effect of $A_0$ ony $Y$
+- This is because, although the ER still holds for $A$ as a whole, it does not hold for $A_0$
+- All this to illustrate that, in contexts such as Mendelian randomization, important thought must be given to how exposures change longitudinally
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\node[text centered] at (0,0) (g) {$Z$};
+\node[text centered] at (2.5,0) (e0) {$A_0$};
+\node[text centered] at (2.5,2) (u) {$U$};
+\node[text centered] at (5,0) (e1) {$A_1$};
+\node[text centered] at (7.5,0) (y) {$Y$};
+\draw[->, line width= 1] (g) -- (e0);
+\draw[->, line width= 1] (e0) -- (e1);
+\draw[->, line width= 1] (e1) -- (y);
+\draw[->, line width= 1] (u) --  (e0);
+\draw[->, line width= 1] (u) --  (e1);
+\draw[->, line width= 1] (u) -- (y);
+\draw[->, line width= 1, red] (e0) to [out=315,in=225, looseness=0.75] (y) ;
+\end{tikzpicture}
+\label{fig:standardIVdag}
+\end{figure}
+
+
+
+
+## Using DAGs to think about Mendelian randomization
+
+- DAG for a MR study of the effect of educational attainment on mortality
+
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\node[text centered] at (0,0) (g) {$G$};
+\node[text centered] at (2.5,0) (p0) {ADHD$_{pre}$};
+\node[text centered] at (2.5,2) (p1) {Dep$_{pre}$};
+\node[text centered] at (2.5,-2) (p2) {Brain vol$_{pre}$};
+\node[text centered] at (5,0) (e) {Educ Att};
+\node[text centered] at (10,0) (y) {Mortality};
+\draw[->, line width= 1] (g) -- (p0);
+\draw[->, line width= 1] (g) -- (p1);
+\draw[->, line width= 1] (g) -- (p2);
+\draw[->, line width= 1] (p0) -- (e);
+\draw[->, line width= 1] (p1) -- (e);
+\draw[->, line width= 1] (p2) -- (e);
+\draw[->, line width= 1] (e) -- (y);
+\end{tikzpicture}
+\label{fig:standardIVdag}
+\end{figure}
+
+
+
+
+## Using DAGs to think about Mendelian randomization
+
+- But what if the intermediates between $G$ and education attainment have a direct effect on mortality?
+
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\node[text centered] at (0,0) (g) {$G$};
+\node[text centered] at (2.5,0) (p0) {ADHD$_{pre}$};
+\node[text centered] at (2.5,2) (p1) {Dep$_{pre}$};
+\node[text centered] at (2.5,-2) (p2) {Brain vol$_{pre}$};
+\node[text centered] at (5,0) (e) {Educ Att};
+\node[text centered] at (10,0) (y) {Mortality};
+\draw[->, line width= 1] (g) -- (p0);
+\draw[->, line width= 1] (g) -- (p1);
+\draw[->, line width= 1] (g) -- (p2);
+\draw[->, line width= 1] (p0) -- (e);
+\draw[->, line width= 1] (p1) -- (e);
+\draw[->, line width= 1] (p2) -- (e);
+\draw[->, line width= 1] (e) -- (y);
+\draw[->, line width= 1, red] (p0) to [out=45,in=165, looseness=0.75] (y) ;
+\draw[->, line width= 1, red] (p1) to [out=0,in=90, looseness=0.75] (y) ;
+\draw[->, line width= 1, red] (p2) to [out=0,in=270, looseness=0.75] (y) ;
+\end{tikzpicture}
+\label{fig:standardIVdag}
+\end{figure}
+
+
+
+
+## Using DAGs to think about Mendelian randomization
+
+- Or what if $G$ has a direct affcect on the intermediates after educational attainment
+
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\node[text centered] at (0,0) (g) {$G$};
+\node[text centered] at (5,0) (e) {Educ Att};
+\node[text centered] at (7.5,0) (p3) {ADHD$_{post}$};
+\node[text centered] at (7.5,2) (p4) {Dep$_{post}$};
+\node[text centered] at (7.5,-2) (p5) {Brain vol$_{post}$};
+\node[text centered] at (10,0) (y) {Mortality};
+\draw[->, line width= 1] (g) -- (e);
+\draw[->, line width= 1] (e) -- (p3);
+\draw[->, line width= 1] (e) -- (p4);
+\draw[->, line width= 1] (e) -- (p5);
+\draw[->, line width= 1] (p3) -- (y);
+\draw[->, line width= 1] (p4) -- (y);
+\draw[->, line width= 1] (p5) -- (y);
+\draw[->, line width= 1, red] (g) to [out=45,in=165, looseness=0.75] (p3) ;
+\draw[->, line width= 1, red] (g) to [out=90,in=180, looseness=0.75] (p4) ;
+\draw[->, line width= 1, red] (g) to [out=270,in=180, looseness=0.75] (p5) ;
+\end{tikzpicture}
+\label{fig:standardIVdag}
+\end{figure}
+
+
+
+
+
+
+## Using DAGs to think about Mendelian randomization
+
+- We have also assumed that $Z$ does not have a direct effect on $A_1$
+
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\node[text centered] at (0,0) (g) {$G$};
+\node[text centered] at (2.5,0) (p0) {ADHD$_{pre}$};
+\node[text centered] at (2.5,2) (p1) {Dep$_{pre}$};
+\node[text centered] at (2.5,-2) (p2) {Brain vol$_{pre}$};
+\node[text centered] at (5,0) (e) {Educ Att};
+\node[text centered] at (7.5,0) (p3) {ADHD$_{post}$};
+\node[text centered] at (7.5,2) (p4) {Dep$_{post}$};
+\node[text centered] at (7.5,-2) (p5) {Brain vol$_{post}$};
+\node[text centered] at (10,0) (y) {Mortality};
+\draw[->, line width= 1] (g) -- (p0);
+\draw[->, line width= 1] (g) -- (p1);
+\draw[->, line width= 1] (g) -- (p2);
+\draw[->, line width= 1] (p0) -- (e);
+\draw[->, line width= 1] (p1) -- (e);
+\draw[->, line width= 1] (p2) -- (e);
+\draw[->, line width= 1] (e) -- (p3);
+\draw[->, line width= 1] (e) -- (p4);
+\draw[->, line width= 1] (e) -- (p5);
+\draw[->, line width= 1] (p3) -- (y);
+\draw[->, line width= 1] (p4) -- (y);
+\draw[->, line width= 1] (p5) -- (y);
+\draw[->, line width= 1, red] (p1) -- (p4);
+\draw[->, line width= 1, red] (p2) -- (p5);
+\draw[->, line width= 1, red] (p0) to [out=45,in=135, looseness=0.75] (p3) ;
+\end{tikzpicture}
+\label{fig:standardIVdag}
+\end{figure}
+
+
+
+
