@@ -43,6 +43,8 @@ This is true! But the DAG has to be correctly specified which is the hard (impos
 ## Rules of DAGs
 
 - Show conditioning on a node with a box
+- The effect of A on Y is confounded because\\
+E$[Y|A=1]-$E$[Y|A=0]$ $\neq$ E$[Y^{a=1}]-$E$[Y^{a=0}]$
 
 \begin{figure}
 \centering
@@ -60,8 +62,7 @@ This is true! But the DAG has to be correctly specified which is the hard (impos
 ## Rules of DAGs
 
 - Show conditioning on a node with a box
-- The effect of A on Y is confounded because\\
-E$[Y|A=1]-$E$[Y|A=0]$ $\neq$ E$[Y^{a=1}]-$E$[Y^{a=0}]$
+
 
 \begin{figure}
 \centering
