@@ -1,5 +1,5 @@
 ---
-title: "Directed acyclic graphs in epidemiology"
+title: "Counterfactuals and Directed acyclic graphs in epidemiology"
 author: "JA Labrecque"
 institute:
 - Erasmus Medical Center, Rotterdam, The Netherlands
@@ -20,7 +20,18 @@ header-includes:
 
 ---
 
+## Counterfacutals and Directed acyclic graphs (DAGs)
+
+- Causal inference requires that we know how outcome $Y$ would change if we changed binary exposure $A$ from $a=0$ to $a=1$
+- We write the outcome $Y$ is we set $A$ to $a$ as $Y^a$
+- Or course, we only get to observe one of these so that $Y^a$ we don't observe is counterfactual
+- We write the causal effect we're interested in as E[$Y^{a=1}-Y^{a=0}$]
+
+
+
+
 ## Directed acyclic graphs (DAGs)
+
 
 - Draw your assumptions before you draw your conclusions
 - "Directed" because the edges have a direction
