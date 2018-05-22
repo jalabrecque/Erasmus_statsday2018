@@ -6,7 +6,7 @@ institute:
 date: "23 mei, 2018"
 output: 
   beamer_presentation: 
-    incremental: true
+    incremental: false
 
 header-includes:
 - \usepackage{tikz}
@@ -24,8 +24,8 @@ header-includes:
 - The goal of causal inference: to know how outcome $Y$ would change if we changed exposure $A$ from $a=0$ to $a=1$
 - $Y^a$: the value outcome $Y$ would take if we set $A$ to $a$
 - So $Y^{a=1}$ is the value $Y$ would take if we set $a=1$ (N.B.: this is not Y|A=1)
-- In a dataset we observe _at most_ half of the $Y^a$ (an RCT of a binary $A$)
-- We write the causal effect we're interested in as $Y^{a=1}-Y^{a=0}$
+- In a dataset we observe _at most_ half of the vector $Y^a$ because we can only observe each person as $Y^{a=1}$ or $Y^{a=0}$
+- We write the causal effect we're interested in as $Y^{a=1}-Y^{a=0}$ or $\frac{Pr[Y^{a=1}=1]}{Pr[Y^{a=0}=1]}$
 
 
 ## Counterfactuals
@@ -63,7 +63,7 @@ header-includes:
 
 ## Directed Acyclic Graphs (DAGs)
 
-- $Y \not\!\perp\!\!\!\perp A$ but $Y^a \!\perp\!\!\!\perp A$
+- $Y \not\!\perp\!\!\!\perp A$ and $Y^a \!\perp\!\!\!\perp A$
 
 \centering
 \resizebox {0.8\textwidth} {!} {
@@ -79,7 +79,7 @@ header-includes:
 
 ## Directed Acyclic Graphs (DAGs)
 
-- $Y \!\perp\!\!\!\perp A|L$ but $Y^a \!\perp\!\!\!\perp A|L$
+- $Y \!\perp\!\!\!\perp A|L$ and $Y^a \!\perp\!\!\!\perp A|L$
 
 \centering
 \resizebox {0.8\textwidth} {!} {
@@ -94,7 +94,7 @@ header-includes:
 
 ## Directed Acyclic Graphs (DAGs)
 
-- $Y \!\perp\!\!\!\perp A$ but $Y^a \!\perp\!\!\!\perp A$
+- $Y \!\perp\!\!\!\perp A$ and $Y^a \!\perp\!\!\!\perp A$
 
 \centering
 \resizebox {0.8\textwidth} {!} {
@@ -110,7 +110,7 @@ header-includes:
 
 ## Directed Acyclic Graphs (DAGs)
 
-- $Y \not\!\perp\!\!\!\perp A|S$ but $Y^a \!\perp\!\!\!\perp A|S$
+- $Y \not\!\perp\!\!\!\perp A|S$ and $Y^a \!\perp\!\!\!\perp A|S$
 
 \centering
 \resizebox {0.8\textwidth} {!} {
@@ -122,6 +122,57 @@ header-includes:
 \draw[->, line width= 1] (a) to [out=45, in=135] (s);
 \end{tikzpicture}
 }
+
+
+
+## Directed Acyclic Graphs (DAGs)
+
+- With a DAG you can identify whether it's possible to achieve conditional exchangeability
+- Here adjusting for ${L_1, L_3}$ or ${L_2, L_3}$ or ${L_1, L_2, L_3}$ are all sufficient adjustment sets
+
+\centering
+\resizebox {0.7\textwidth} {!} {
+\begin{tikzpicture}
+\node[text centered] at (0,2) (l1) {$L_1$};
+\node[text centered] at (3,2) (l2) {$L_2$};
+\node[text centered] at (1.5,1) (l3) {$L_3$};
+\node[text centered] at (0,0) (a) {$A$};
+\node[text centered] at (3,0) (y) {$Y$};
+\draw[->, line width= 1] (a) -- (y);
+\draw[->, line width= 1] (l1) -- (a);
+\draw[->, line width= 1] (l1) -- (l3);
+\draw[->, line width= 1] (l2) -- (y);
+\draw[->, line width= 1] (l2) -- (l3);
+\draw[->, line width= 1] (l3) -- (y);
+\draw[->, line width= 1] (l3) -- (a);
+\end{tikzpicture}
+}
+
+
+## Directed Acyclic Graphs (DAGs)
+
+- With a DAG you can identify whether it's possible to achieve conditional exchangeability
+- Here adjusting for ${L_1, L_3}$ or ${L_2, L_3}$ or ${L_1, L_2, L_3}$ are all sufficient adjustment sets
+
+\centering
+\resizebox {0.7\textwidth} {!} {
+\begin{tikzpicture}
+\node[text centered] at (0,2) (l1) {$L_1$};
+\node[text centered] at (3,2) (l2) {$L_2$};
+\node[text centered, rectangle, draw] at (1.5,1) (l3) {$L_3$};
+\node[text centered] at (0,0) (a) {$A$};
+\node[text centered] at (3,0) (y) {$Y$};
+\draw[->, line width= 1] (a) -- (y);
+\draw[->, line width= 1] (l1) -- (a);
+\draw[->, line width= 1] (l1) -- (l3);
+\draw[->, line width= 1] (l2) -- (y);
+\draw[->, line width= 1] (l2) -- (l3);
+\draw[->, line width= 1] (l3) -- (y);
+\draw[->, line width= 1] (l3) -- (a);
+\draw[dashed, line width= 1] (l1) -- (l2);
+\end{tikzpicture}
+}
+
 
 
 
@@ -230,7 +281,8 @@ This is true! But the DAG has to be correctly specified which is the hard (impos
 ## Showing the IV assumptions in a DAG
 
 - With our three assumptions, we end up with our classic IV DAG
-- Note: monontonicity and homogeneity cannot be drawn on a DAG because they are parametric concepts
+- This DAG implies that if $Z \not\!\perp\!\!\!\perp Y$ then it must also be that $A \not\!\perp\!\!\!\perp Y^a$
+- IV estimation requires monontonicity and homogeneity cannot be drawn on a DAG because they are parametric concepts
 
 \begin{figure}
 \centering
@@ -251,6 +303,9 @@ This is true! But the DAG has to be correctly specified which is the hard (impos
 ## Conditioning on exposure in IV analyses
 
 - Sometimes people like to stratify or restrict on exposure
+- But if we do, now $Z \not\!\perp\!\!\!\perp U$ and therefore $Z \not\!\perp\!\!\!\perp Y$, AKA, the exchangeability assumption is violated
+- Swanson et al, Am J Epi, 2015
+ 
 
 
 \begin{figure}
@@ -272,7 +327,7 @@ This is true! But the DAG has to be correctly specified which is the hard (impos
 
 ## Conditioning on exposure in IV analyses
 
-- But we create a new association between $Z$ and $U$ therefore violating the exchangeability assumption
+- We often draw this on DAGs using a dashed line to remind us that these variables are associated now
 
 
 \begin{figure}
@@ -292,10 +347,36 @@ This is true! But the DAG has to be correctly specified which is the hard (impos
 \end{figure}
 
 
+## An example where a simple DAG could have helped
+
+- "Strong evidence of collider bias was observed for smoking behaviour" (Cho et al, Sci Rep, 2015)
+- "To minimize the effect of risk factors susceptible to collider bias, associations between the SNP and cardiovascular outcomes were then assessed with adjustments for smoking"
+- By saying smoking is what drives collider bias, they are implying smoking is the only confounder alcohol and cardiovascular outcomes. Better off simply adjusting then?
+
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\node[text centered] at (0,0) (g) {$Z$};
+\node[text centered, rectangle, draw] at (2.5,0) (e) {$A$};
+\node[text centered] at (2.5,2) (u) {$Smoking$};
+\node[text centered] at (5,0) (y) {$Y$};
+\draw[->, line width= 1] (g) -- (e);
+\draw[->, line width= 1] (e) -- (y);
+\draw[->, line width= 1] (u) --  (e);
+\draw[->, line width= 1] (u) -- (y);
+\draw[line width= 1, red, dashed] (g) to [out=90,in=180, looseness=0.75] (u) ;
+\end{tikzpicture}
+\label{fig:standardIVdag}
+\end{figure}
+
+
+
 
 ## Using DAGs to think about IV longitudinally
 
 - We can depict a time-varying exposure by splitting the $A$ node into separate nodes for each time point
+- We are still assuming the IVs assumptions but splitting $A$ into two nodes adds assumptions to the DAG
 
 \begin{figure}
 \centering
@@ -387,6 +468,37 @@ This is true! But the DAG has to be correctly specified which is the hard (impos
 \draw[->, line width= 1] (u) --  (e1);
 \draw[->, line width= 1] (u) -- (y);
 \draw[->, line width= 1, red] (g) to [out=315,in=225, looseness=0.75] (e1) ;
+\end{tikzpicture}
+\label{fig:standardIVdag}
+\end{figure}
+
+
+
+## Using DAGs to think about IV longitudinally
+
+- What if we think about joint effects?
+- First, though "lifetime effects" is often used in Mendelian randomization, it has no precise defintion
+- We propose E[$Y_k^{\bar{A}+\bar{1}} - Y_k^{\bar{A}}$]
+- Only identifiable with IV if the effect of the $Z$ on $A$ does not change with time (N.B.: $A$ can change as long as the effect of $G$ doesn't)
+- This also has implications for which null hypotheses are testable (Swanson et al, Eur J Epi, 2018)
+
+
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\node[text centered] at (0,0) (g) {$Z$};
+\node[text centered] at (2.5,0) (e0) {$A_0$};
+\node[text centered] at (2.5,2) (u) {$U$};
+\node[text centered] at (5,0) (e1) {$A_1$};
+\node[text centered] at (7.5,0) (y) {$Y$};
+\draw[->, line width= 1] (g) -- (e0);
+\draw[->, line width= 1] (e0) -- (e1);
+\draw[->, line width= 1] (e1) -- (y);
+\draw[->, line width= 1] (u) --  (e0);
+\draw[->, line width= 1] (u) --  (e1);
+\draw[->, line width= 1] (u) -- (y);
+\draw[->, line width= 1] (e0) to [out=315,in=225, looseness=0.75] (y) ;
 \end{tikzpicture}
 \label{fig:standardIVdag}
 \end{figure}
