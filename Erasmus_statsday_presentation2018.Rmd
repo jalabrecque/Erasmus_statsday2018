@@ -17,31 +17,113 @@ header-includes:
 - \usetikzlibrary{decorations.pathreplacing,angles,quotes,shapes,snakes}
 - \usepackage{subfigure}
 - \usepackage{graphicx}
-
 ---
 
-## Counterfacutals and Directed acyclic graphs (DAGs)
+## Causal inference 
 
-- Causal inference requires that we know how outcome $Y$ would change if we changed binary exposure $A$ from $a=0$ to $a=1$
-- We write the outcome $Y$ is we set $A$ to $a$ as $Y^a$
-- Or course, we only get to observe one of these so that $Y^a$ we don't observe is counterfactual
-- We write the causal effect we're interested in as E[$Y^{a=1}-Y^{a=0}$]
-
-
-
-
-## Directed acyclic graphs (DAGs)
+- The goal of causal inference: to know how outcome $Y$ would change if we changed exposure $A$ from $a=0$ to $a=1$
+- $Y^a$: the value outcome $Y$ would take if we set $A$ to $a$
+- So $Y^{a=1}$ is the value $Y$ would take if we set $a=1$ (N.B.: this is not Y|A=1)
+- In a dataset we observe _at most_ half of the $Y^a$ (an RCT of a binary $A$)
+- We write the causal effect we're interested in as $Y^{a=1}-Y^{a=0}$
 
 
-- Draw your assumptions before you draw your conclusions
-- "Directed" because the edges have a direction
-- "Acyclic" because there can be no cycles, i.e. a variable cannot cause itself
-- A causal DAG requires that:
-    - a lack of an arrow between two nodes implies the absence of a causal effect
-    - all common causes of variables on the graph are themselves on the graph
-    - any variable is a cause of its descendents
-- To map a causal DAG to observed data we require the causal Markov assumption that a node is independent of all nodes which it does not cause conditional on its parents
-- We can then use DAGs to explore the causal relationship between variables using our observational data
+## Counterfactuals
+
+- Counterfactual notation has been used to achieve insight into estimation of longitudinal causal effects, instrumental variables and a number of other topics
+- Some of the insight provided by counterfactuals can also be depicted in graphical form
+
+
+
+## Directed Acyclic Graphs (DAGs)
+\setbeamertemplate{caption}{\raggedright\insertcaption\par}
+
+![](so.png)
+
+
+## Directed Acyclic Graphs (DAGs)
+- DAGs are diagrams with simple rules that allow us to clearly think about our causal questions to determine what sources of bias we might have and how we can avoid them
+- DAGs are composed of two elements: nodes and edges
+- Edges are directed (i.e. one causes the other)
+- DAGs must be acyclic, no feedback loops are allowed
+- The edges are not deterministic
+
+\vspace{1cm}
+\centering
+\resizebox {0.5\textwidth} {!} {
+\begin{tikzpicture}[scale=1]
+\node[text centered] at (0,0) (a) {$A$};
+\node[text centered] at (-0.25,0.25) (n) {\tiny{node}};
+\node[text centered] at (3,0) (y) {$Y$};
+\draw[->, line width= 1] (a) -- (y) node [midway, above, fill=white] {\tiny{edge}};
+\end{tikzpicture}
+}
+
+
+
+## Directed Acyclic Graphs (DAGs)
+
+- $Y \not\!\perp\!\!\!\perp A$ but $Y^a \!\perp\!\!\!\perp A$
+
+\centering
+\resizebox {0.8\textwidth} {!} {
+\begin{tikzpicture}
+\node[text centered] at (-3,0) (l) {$L$};
+\node[text centered] at (0,0) (a) {$A$};
+\node[text centered] at (3,0) (y) {$Y$};
+\draw[->, line width= 1] (l) -- (a);
+\draw[->, line width= 1] (l) to [out=45, in=135] (y);
+\end{tikzpicture}
+}
+
+
+## Directed Acyclic Graphs (DAGs)
+
+- $Y \!\perp\!\!\!\perp A|L$ but $Y^a \!\perp\!\!\!\perp A|L$
+
+\centering
+\resizebox {0.8\textwidth} {!} {
+\begin{tikzpicture}
+\node[text centered, rectangle, draw] at (-3,0) (l) {$L$};
+\node[text centered] at (0,0) (a) {$A$};
+\node[text centered] at (3,0) (y) {$Y$};
+\draw[->, line width= 1] (l) -- (a);
+\draw[->, line width= 1] (l) to [out=45, in=135] (y);
+\end{tikzpicture}
+}
+
+## Directed Acyclic Graphs (DAGs)
+
+- $Y \!\perp\!\!\!\perp A$ but $Y^a \!\perp\!\!\!\perp A$
+
+\centering
+\resizebox {0.8\textwidth} {!} {
+\begin{tikzpicture}
+\node[text centered] at (-3,0) (a) {$A$};
+\node[text centered] at (0,0) (y) {$Y$};
+\node[text centered] at (3,0) (s) {$S$};
+\draw[->, line width= 1] (y) -- (s);
+\draw[->, line width= 1] (a) to [out=45, in=135] (s);
+\end{tikzpicture}
+}
+
+
+## Directed Acyclic Graphs (DAGs)
+
+- $Y \not\!\perp\!\!\!\perp A|S$ but $Y^a \!\perp\!\!\!\perp A|S$
+
+\centering
+\resizebox {0.8\textwidth} {!} {
+\begin{tikzpicture}
+\node[text centered] at (-3,0) (a) {$A$};
+\node[text centered] at (0,0) (y) {$Y$};
+\node[text centered, rectangle, draw] at (3,0) (s) {$S$};
+\draw[->, line width= 1] (y) -- (s);
+\draw[->, line width= 1] (a) to [out=45, in=135] (s);
+\end{tikzpicture}
+}
+
+
 
 ## Directed acyclic graphs (DAGs)
 
@@ -51,42 +133,6 @@ header-includes:
 
 This is true! But the DAG has to be correctly specified which is the hard (impossible) part.
 
-## Rules of DAGs
-
-- Show conditioning on a node with a box
-- The effect of A on Y is confounded because\\
-E$[Y|A=1]-$E$[Y|A=0]$ $\neq$ E$[Y^{a=1}]-$E$[Y^{a=0}]$
-
-\begin{figure}
-\centering
-\begin{tikzpicture}
-\node[text centered] at (0,0) (e) {$A$};
-\node[text centered] at (0,2) (u) {$U$};
-\node[text centered] at (5,0) (y) {$Y$};
-\draw[->, line width= 1] (e) -- (y);
-\draw[->, line width= 1] (u) -- (e);
-\draw[->, line width= 1] (u) -- (y);
-\end{tikzpicture}
-\label{fig:standardIVdag}
-\end{figure}
-
-## Rules of DAGs
-
-- Show conditioning on a node with a box
-
-
-\begin{figure}
-\centering
-\begin{tikzpicture}
-\node[text centered] at (0,0) (e) {$A$};
-\node[text centered, rectangle, draw] at (0,2) (u) {$U$};
-\node[text centered] at (5,0) (y) {$Y$};
-\draw[->, line width= 1] (e) -- (y);
-\draw[->, line width= 1] (u) -- (e);
-\draw[->, line width= 1] (u) -- (y);
-\end{tikzpicture}
-\label{fig:standardIVdag}
-\end{figure}
 
 
 
@@ -340,7 +386,7 @@ E$[Y|A=1]-$E$[Y|A=0]$ $\neq$ E$[Y^{a=1}]-$E$[Y^{a=0}]$
 \draw[->, line width= 1] (u) --  (e0);
 \draw[->, line width= 1] (u) --  (e1);
 \draw[->, line width= 1] (u) -- (y);
-\draw[->, line width= 1, red] (e0) to [out=315,in=225, looseness=0.75] (y) ;
+\draw[->, line width= 1, red] (g) to [out=315,in=225, looseness=0.75] (e1) ;
 \end{tikzpicture}
 \label{fig:standardIVdag}
 \end{figure}
