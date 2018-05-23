@@ -1,8 +1,8 @@
 ---
-title: "Counterfactuals and Directed acyclic graphs in epidemiology"
+title: "Counterfactuals and directed acyclic graphs in epidemiology"
 author: "JA Labrecque"
 institute:
-- Erasmus Medical Center, Rotterdam, The Netherlands
+- Erasmus MC, Rotterdam
 date: "23 mei, 2018"
 output: 
   beamer_presentation: 
@@ -24,8 +24,9 @@ header-includes:
 - The goal of causal inference: to know how outcome $Y$ would change if we changed exposure $A$ from $a=0$ to $a=1$
 - $Y^a$: the value outcome $Y$ would take if we set $A$ to $a$
 - So $Y^{a=1}$ is the value $Y$ would take if we set $a=1$ (N.B.: this is not Y|A=1)
-- In a dataset we observe _at most_ half of the vector $Y^a$ because we can only observe each person as $Y^{a=1}$ or $Y^{a=0}$
-- We write the causal effect we're interested in as $Y^{a=1}-Y^{a=0}$ or $\frac{Pr[Y^{a=1}=1]}{Pr[Y^{a=0}=1]}$
+- Ideally, we would like to observe $Y^{a=1}$ and $Y^{a=0}$ for everyone 
+- But we observe _at most_ half of the vector $Y^a$ because we can only observe each person as $Y^{a=1}$ or $Y^{a=0}$
+- We write the causal effect we're interested in as E[$Y^{a=1}-Y^{a=0}$] or $\Pr[Y^{a=1}=1] - Pr[Y^{a=0}=1]$ or $\frac{Pr[Y^{a=1}=1]}{Pr[Y^{a=0}=1]}$
 
 
 ## Counterfactuals
@@ -213,6 +214,7 @@ This is true! But the DAG has to be correctly specified which is the hard (impos
 ## Showing the IV assumptions in a DAG
 
 - The relevance assumption is represented by the red arrow, showing that there is a relationship between $Z$ and $A$
+- $Z \not\!\perp\!\!\!\perp A$
 
 \begin{figure}
 \centering
@@ -235,6 +237,7 @@ This is true! But the DAG has to be correctly specified which is the hard (impos
 ## Showing the IV assumptions in a DAG
 
 - The exclusion restriction (ER) assumption assumes that the direct edge between $Z$ and $A$ is not present
+- E[$Y^{z,a}$] = E[$Y^{z',a}$]
 
 \begin{figure}
 \centering
@@ -256,6 +259,7 @@ This is true! But the DAG has to be correctly specified which is the hard (impos
 ## Showing the IV assumptions in a DAG
 
 - The exchangeability assumption assumes that $Z$ is not confounded with $Y$
+- $Y^{a,z} \!\perp\!\!\!\perp Z$
 
 \begin{figure}
 \centering
@@ -280,8 +284,8 @@ This is true! But the DAG has to be correctly specified which is the hard (impos
 
 ## Showing the IV assumptions in a DAG
 
-- With our three assumptions, we end up with our classic IV DAG
-- This DAG implies that if $Z \not\!\perp\!\!\!\perp Y$ then it must also be that $A \not\!\perp\!\!\!\perp Y^a$
+- With our three assumptions, we end up with our classic IV DAG which implies that $Z \!\perp\!\!\!\perp Y^a$
+- Therefore if $Z \not\!\perp\!\!\!\perp Y$ then it must be that E[$Y^a - Y^{a'}$] $\not= 0$
 - IV estimation requires monontonicity and homogeneity cannot be drawn on a DAG because they are parametric concepts
 
 \begin{figure}
@@ -303,7 +307,7 @@ This is true! But the DAG has to be correctly specified which is the hard (impos
 ## Conditioning on exposure in IV analyses
 
 - Sometimes people like to stratify or restrict on exposure
-- But if we do, now $Z \not\!\perp\!\!\!\perp U$ and therefore $Z \not\!\perp\!\!\!\perp Y$, AKA, the exchangeability assumption is violated
+- But if we do, now $Z \not\!\perp\!\!\!\perp U$ and therefore $Z \not\!\perp\!\!\!\perp Y^{z,a}$, AKA, the exchangeability assumption is violated
 - Swanson et al, Am J Epi, 2015
  
 
@@ -324,10 +328,12 @@ This is true! But the DAG has to be correctly specified which is the hard (impos
 \end{figure}
 
 
-
 ## Conditioning on exposure in IV analyses
 
-- We often draw this on DAGs using a dashed line to remind us that these variables are associated now
+- Sometimes people like to stratify or restrict on exposure
+- But if we do, now $Z \not\!\perp\!\!\!\perp U$ and therefore $Z \not\!\perp\!\!\!\perp Y^{z,a}$, AKA, the exchangeability assumption is violated
+- Swanson et al, Am J Epi, 2015
+ 
 
 
 \begin{figure}
@@ -345,6 +351,9 @@ This is true! But the DAG has to be correctly specified which is the hard (impos
 \end{tikzpicture}
 \label{fig:standardIVdag}
 \end{figure}
+
+
+
 
 
 ## An example where a simple DAG could have helped
@@ -634,6 +643,15 @@ This is true! But the DAG has to be correctly specified which is the hard (impos
 \label{fig:standardIVdag}
 \end{figure}
 
+
+## Thank you
+
+- We are Erasmus MC Causal Inference Group (we don't have a name yet)
+    - Sonja Swanson (assistant professor): Instrumental variable analysis, target trial emulation, causal inference 
+    - Jeremy Labrecque (postdoc): Instrumental variable analysis, target trial emulation, causal inference
+    - Elizabeth Diemer (PhD student): Methodological issues in perinatal MR
+    - Paloma Rojas Saunero (PhD student): Target trial emulation using data from the Rotterdam Study
+- Email us at: s.swanson@erasmusmc.nl or j.labrecque@erasmusmc.nl
 
 
 
