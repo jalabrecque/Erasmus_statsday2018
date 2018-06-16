@@ -286,7 +286,7 @@ This is true! But the DAG has to be correctly specified which is the hard (impos
 
 - With our three assumptions, we end up with our classic IV DAG which implies that $Z \!\perp\!\!\!\perp Y^a$
 - Therefore if $Z \not\!\perp\!\!\!\perp Y$ then it must be that E[$Y^a - Y^{a'}$] $\not= 0$
-- IV estimation requires monontonicity and homogeneity cannot be drawn on a DAG because they are parametric concepts
+- IV estimation requires assuming monontonicity or homogeneity but these concepts cannot be drawn on a DAG because they are parametric in nature
 
 \begin{figure}
 \centering
