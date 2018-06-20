@@ -2,7 +2,7 @@
 title: "Counterfactuals and directed acyclic graphs in epidemiology"
 author: "JA Labrecque"
 institute:
-- Erasmus MC, Rotterdam
+- Department of Epidemiology, Erasmus MC, Rotterdam
 date: "23 mei, 2018"
 output: 
   beamer_presentation: 
@@ -18,6 +18,13 @@ header-includes:
 - \usepackage{subfigure}
 - \usepackage{graphicx}
 ---
+
+## Motivation
+
+\begin{center}
+\includegraphics[height=5cm]{c_word.png}
+\end{center}
+
 
 ## Causal inference 
 
@@ -64,7 +71,9 @@ header-includes:
 
 ## Directed Acyclic Graphs (DAGs)
 
-- $Y \not\!\perp\!\!\!\perp A$ and $Y^a \!\perp\!\!\!\perp A$
+- $E[Y^{a=1}] - E[Y^{a=0}] = 0$
+- $E[Y|A=1] - E[Y|A=0] \not= 0$
+- $A \not\!\perp\!\!\!\perp Y^a$
 
 \centering
 \resizebox {0.8\textwidth} {!} {
@@ -80,7 +89,9 @@ header-includes:
 
 ## Directed Acyclic Graphs (DAGs)
 
-- $Y \!\perp\!\!\!\perp A|L$ and $Y^a \!\perp\!\!\!\perp A|L$
+- $E[Y^{a=1}|L] - E[Y^{a=0}|L] = 0$
+- $E[Y|A=1,L] - E[Y|A=0,L] = 0$
+- $A \!\perp\!\!\!\perp Y^a|L$
 
 \centering
 \resizebox {0.8\textwidth} {!} {
@@ -95,7 +106,9 @@ header-includes:
 
 ## Directed Acyclic Graphs (DAGs)
 
-- $Y \!\perp\!\!\!\perp A$ and $Y^a \!\perp\!\!\!\perp A$
+- $E[Y^{a=1}] - E[Y^{a=0}] = 0$
+- $E[Y|A=1] - E[Y|A=0] = 0$
+- $A \!\perp\!\!\!\perp Y^a$
 
 \centering
 \resizebox {0.8\textwidth} {!} {
@@ -111,7 +124,9 @@ header-includes:
 
 ## Directed Acyclic Graphs (DAGs)
 
-- $Y \not\!\perp\!\!\!\perp A|S$ and $Y^a \!\perp\!\!\!\perp A|S$
+- $E[Y^{a=1}|S] - E[Y^{a=0}|S] = 0$
+- $E[Y|A=1,S] - E[Y|A=0,S] \not= 0$
+- $A \not\!\perp\!\!\!\perp Y^a|S$
 
 \centering
 \resizebox {0.8\textwidth} {!} {
@@ -128,7 +143,7 @@ header-includes:
 
 ## Directed Acyclic Graphs (DAGs)
 
-- With a DAG you can identify whether it's possible to achieve conditional exchangeability
+- With a DAG you can identify whether the causal question is identifiable and, if so, what must be adjusted for
 - Here adjusting for ${L_1, L_3}$ or ${L_2, L_3}$ or ${L_1, L_2, L_3}$ are all sufficient adjustment sets
 
 \centering
@@ -152,7 +167,7 @@ header-includes:
 
 ## Directed Acyclic Graphs (DAGs)
 
-- With a DAG you can identify whether it's possible to achieve conditional exchangeability
+- With a DAG you can identify whether the causal question is identifiable and, if so, what must be adjusted for
 - Here adjusting for ${L_1, L_3}$ or ${L_2, L_3}$ or ${L_1, L_2, L_3}$ are all sufficient adjustment sets
 
 \centering
@@ -386,6 +401,7 @@ This is true! But the DAG has to be correctly specified which is the hard (impos
 
 - We can depict a time-varying exposure by splitting the $A$ node into separate nodes for each time point
 - We are still assuming the IVs assumptions but splitting $A$ into two nodes adds assumptions to the DAG
+- Labrecque and Swanson (under review at Am J Epi)
 
 \begin{figure}
 \centering
